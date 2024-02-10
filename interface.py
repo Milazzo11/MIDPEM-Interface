@@ -6,6 +6,7 @@ MIDPEM "all" command interface.
 
 
 import time
+import discord
 from discord import SyncWebhook
 
 
@@ -30,14 +31,30 @@ def main():
     
     print("Enter formatted command")
     cmd = input("> ")
+    # get command
     
+    print("Enter attached filename (or ENTER if none)")
+    filename = input("> ")
+    # get attached filename (if applicable)
+        
     with open(DEVICES_FILE, "r") as f:
-        for line in f:
+        lines = f.readlines()
+        # read device data
+        
+    for line in lines:
+    # execute command for each device
+        
+        if filename.strip() == "":
             WEBHOOK.send(cmd % line.strip())
             # send formatted command
+
+        else:
+            with open(filename, "rb") as f:
+                WEBHOOK.send(cmd % line.strip(), file=discord.File(fp=f))
+                # send formatted command with attached file
             
-            time.sleep(DELAY)
-            
+        time.sleep(DELAY)
+                
 
 if __name__ == "__main__":
     main()
